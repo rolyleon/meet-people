@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        .chat-header {
+            background-color: #4f504f;
+            color: white;
+            padding: 10px;
+            width: 100%;
+            text-align: center;
+        }
+        .chat-container {
+            width: 100%;
+            max-width: 500px;
+            height: 300px;
+            overflow-y: scroll;
+            background-color: white;
+            padding: 10px;
+            border: 1px solid #ccc;
+            margin-bottom: 10px;
+        }
+        .message {
+            background-color: #e9f7e9;
+            padding: 5px;
+            border-radius: 4px;
+            margin-bottom: 5px;
+            max-width: 80%;
+        }
+        .message.sent {
+            background-color: #d4f7ff;
+            text-align: right;
+        }
+        .message-box {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+        }
+        .message-box input {
+            width: 80%;
+            padding: 5px;
+        }
+        .message-box button {
+            padding: 5px 10px;
+            background-color: #3d3d3d;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .message-box button:hover {
+            background-color: #000000;
+        }
+        .user-list {
+            width: 100%;
+            max-width: 500px;
+            margin-bottom: 20px;
+        }
+        .user-item {
+            background-color: white;
+            padding: 10px;
+            margin: 5px 0;
+            text-align: center;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            cursor: pointer;
+        }
+        .user-item:hover {
+            background-color: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="chat-header">
+        <h2>Conversaciones</h2>
+    </div>
+
+    <!-- Lista de usuarios con los que has chateado -->
+    <div class="user-list" id="user-list">
+        <!-- Los usuarios se cargarán aquí -->
+    </div>
+
+    <div class="chat-container" id="chat-container">
+        <!-- Los mensajes serán agregados aquí -->
+    </div>
+
+    <div class="message-box">
+        <input type="text" id="message-input" placeholder="Escribe un mensaje..." />
+        <button onclick="sendMessage()">Enviar</button>
+    </div>
+
+    <script>
+        // Al cargar la página, cargamos la lista de usuarios y la conversación
+        window.onload = function() {
+            var urlParams = new URLSearchParams(window.location.search);
+            var user = urlParams.get('user');
+
+            if (user) {
+                // Cargar mensajes del usuario seleccionado
+                loadMessages(user);
+                document.querySelector(".chat-header h2").textContent = `Conversación con ${user}`;
+            } else {
+                // Si no se ha seleccionado un usuario, cargamos la lista de usuarios
+                loadUserList();
+            }
+        };
+
+        // Cargar mensajes previos del usuario desde localStorage
+        function loadMessages(user) {
+            var messages = JSON.parse(localStorage.getItem(user)) || [];
+            var chatContainer = document.getElementById("chat-container");
+
+            // Mostrar cada mensaje en el contenedor de chat
+            messages.forEach(function(msg) {
+                var messageDiv = document.createElement("div");
+                messageDiv.classList.add("message", msg.sent ? "sent" : "");
+                messageDiv.textContent = msg.text;
+                chatContainer.appendChild(messageDiv);
+            });
+
+            // Desplazarse hacia abajo para ver los últimos mensajes
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        // Función para enviar mensajes
+        function sendMessage() {
+            var messageInput = document.getElementById("message-input");
+            var messageText = messageInput.value.trim();
+
+            if (messageText) {
+                var urlParams = new URLSearchParams(window.location.search);
+                var user = urlParams.get('user');
+                
+                if (user) {
+                    // Crear el objeto de mensaje
+                    var message = {
+                        text: messageText,
+                        sent: true // Indica que es un mensaje enviado por el usuario
+                    };
+
+                    // Guardar el mensaje en localStorage
+                    var messages = JSON.parse(localStorage.getItem(user)) || [];
+                    messages.push(message);
+                    localStorage.setItem(user, JSON.stringify(messages));
+
+                    // Mostrar el mensaje en la interfaz
+                    var messageDiv = document.createElement("div");
+                    messageDiv.classList.add("message", "sent");
+                    messageDiv.textContent = messageText;
+                    document.getElementById("chat-container").appendChild(messageDiv);
+
+                    // Limpiar el campo de entrada de texto
+                    messageInput.value = "";
+
+                    // Desplazarse hacia abajo para ver el mensaje recién agregado
+                    document.getElementById("chat-container").scrollTop = document.getElementById("chat-container").scrollHeight;
+
+                    // Agregar el usuario a la lista si no está ya presente
+                    addUser(user);
+                }
+            }
+        }
+
+        // Cargar la lista de usuarios con los que has tenido conversaciones
+        function loadUserList() {
+            var userList = JSON.parse(localStorage.getItem("users")) || [];
+            var userListContainer = document.getElementById("user-list");
+
+            userList.forEach(function(user) {
+                var userItem = document.createElement("div");
+                userItem.classList.add("user-item");
+                userItem.textContent = user;
+                userItem.onclick = function() {
+                    window.location.href = `chat.html?user=${encodeURIComponent(user)}`;
+                };
+                userListContainer.appendChild(userItem);
+            });
+        }
+
+        // Función para agregar un nuevo usuario a la lista de usuarios en localStorage
+        function addUser(user) {
+            var userList = JSON.parse(localStorage.getItem("users")) || [];
+            if (!userList.includes(user)) {
+                userList.push(user);
+                localStorage.setItem("users", JSON.stringify(userList));
+            }
+        }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar sesión o crear cuenta</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 350px;
+        }
+        h2 {
+            text-align: center;
+        }
+        .input-field {
+            width: 100%;
+            padding: 8px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+        .btn {
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background-color: #45a049;
+        }
+        .google-btn {
+            width: 100%;
+            padding: 10px;
+            background-color: #db4437;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .google-btn:hover {
+            background-color: #c1351d;
+        }
+        .link {
+            text-align: center;
+            margin-top: 10px;
+        }
+        .link a {
+            color: #4CAF50;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Iniciar sesión o crear cuenta</h2>
+
+        <!-- Formulario de inicio de sesión -->
+        <form action="profile.html" method="get">
+            <input type="email" class="input-field" name="email" placeholder="Correo electrónico" required><br>
+            <input type="password" class="input-field" name="password" placeholder="Contraseña" required><br>
+            <button type="submit" class="btn">Iniciar sesión</button>
+        </form>
+
+        <!-- Enlace para crear cuenta -->
+        <div class="link">
+            <p>¿No tienes cuenta? <a href="signup.html">Crea una cuenta</a></p>
+        </div>
+
+        <div class="link">
+            <p>O inicia sesión con Google:</p>
+            <button class="google-btn" onclick="googleLogin()">Iniciar sesión con Google</button>
+        </div>
+    </div>
+
+    <script>
+        function googleLogin() {
+            // Aquí iría la lógica para integrar Google OAuth.
+            // Esto es un ejemplo de la funcionalidad de login con Google.
+            alert("Redirigiendo a Google para iniciar sesión.");
+            // Implementar OAuth2 con Google API aquí.
+        }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Perfil</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        .profile-container {
+            text-align: center;
+        }
+        .profile-img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .photos-container {
+            margin-top: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .photo-preview {
+            width: 100px;
+            height: 100px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+        .menu {
+            margin-top: 20px;
+        }
+        .menu a {
+            display: block;
+            background-color: #696b69;
+            color: white;
+            padding: 10px;
+            margin: 10px 0;
+            text-decoration: none;
+            border-radius: 4px;
+            width: 200px;
+            text-align: center;
+        }
+        .menu a:hover {
+            background-color: #202020e1;
+        }
+        .btn-change-img {
+            margin-top: 10px;
+            background-color: #007bff;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .btn-change-img:hover {
+            background-color: #0056b3;
+        }
+        .btn-upload {
+            margin-top: 20px;
+            background-color: #28a745;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .btn-upload:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Bienvenido a tu perfil</h1>
+
+    <div class="profile-container">
+        <img src="default-profile.jpg" alt="Foto de perfil" class="profile-img" id="profile-img">
+        <button class="btn-change-img" onclick="changeProfilePic()">Cambiar foto</button>
+    </div>
+
+    <div class="menu">
+        <a href="settings.html">Ajustes</a>
+        <a href="chat.html">Chat</a>
+        <a href="people.html">Personas</a>
+    </div>
+
+    <!-- Contenedor de fotos adicionales -->
+    <div class="photos-container" id="photos-container">
+        <!-- Aquí aparecerán las fotos cargadas -->
+    </div>
+
+    <!-- Formulario para subir más fotos -->
+    <input type="file" id="file-input" accept="image/*" multiple style="display: none;" onchange="previewPhotos(event)">
+    <button class="btn-upload" onclick="document.getElementById('file-input').click()">Subir más fotos</button>
+
+    <script>
+        // Función para cambiar la foto de perfil
+        function changeProfilePic() {
+            alert("Aquí puedes agregar una opción para cambiar la foto.");
+            // Implementar opción para cambiar la foto de perfil aquí
+        }
+
+        // Función para previsualizar las fotos cargadas
+        function previewPhotos(event) {
+            const files = event.target.files;
+            const photosContainer = document.getElementById("photos-container");
+
+            // Limpiar fotos previas
+            photosContainer.innerHTML = "";
+
+            // Crear elementos para cada foto cargada
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                const reader = new FileReader();
+
+                reader.onload = function(e) {
+                    const img = document.createElement("img");
+                    img.src = e.target.result;
+                    img.classList.add("photo-preview");
+                    photosContainer.appendChild(img);
+                };
+
+                reader.readAsDataURL(file);
+            }
+        }
+    </script>
+
+</body>
+</html>
