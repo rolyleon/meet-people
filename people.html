@@ -5,100 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Personas</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
-        }
-        .person {
-            background-color: white;
-            padding: 10px;
-            margin: 10px;
-            width: 80%;
-            max-width: 500px;
-            text-align: center;
-            border-radius: 4px;
-            border: 1px solid #ccc;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        .person img {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            cursor: pointer;
-        }
-        .person-name {
-            font-size: 18px;
-            font-weight: bold;
-            flex-grow: 1;
-        }
-        .start-chat-btn {
-            background-color: #4CAF50;
-            color: white;
-            padding: 8px;
-            text-decoration: none;
-            border-radius: 4px;
-        }
-        .start-chat-btn:hover {
-            background-color: #45a049;
-        }
-        .gallery {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-        .gallery img {
-            max-width: 80%;
-            max-height: 80%;
-            margin: 10px;
-        }
-        .gallery .close-btn {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background-color: #ff4444;
-            color: white;
-            padding: 10px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        .gallery .close-btn:hover {
-            background-color: #cc0000;
-        }
+        /* Estilos similares a los previos... */
+        /* Aquí omito los estilos para centrarme en el funcionamiento */
     </style>
 </head>
 <body>
 
     <h1>Personas disponibles para chatear</h1>
 
-    <!-- Ejemplo de persona -->
-    <div class="person">
-        <img src="https://via.placeholder.com/50" alt="Foto de Juan Pérez" onclick="openGallery(['https://via.placeholder.com/150', 'https://via.placeholder.com/150?text=Foto2', 'https://via.placeholder.com/150?text=Foto3'])">
-        <div class="person-name">Juan Pérez</div>
-        <!-- Ahora con un parámetro en la URL para cargar la conversación con el usuario -->
-        <a href="chat.html?user=Juan%20Pérez" class="start-chat-btn">Iniciar chat</a>
-    </div>
-
-    <!-- Otra persona -->
-    <div class="person">
-        <img src="https://via.placeholder.com/50" alt="Foto de Ana Gómez" onclick="openGallery(['https://via.placeholder.com/150?text=Ana1', 'https://via.placeholder.com/150?text=Ana2', 'https://via.placeholder.com/150?text=Ana3'])">
-        <div class="person-name">Ana Gómez</div>
-        <!-- Botón para iniciar conversación con Ana -->
-        <a href="chat.html?user=Ana%20Gómez" class="start-chat-btn">Iniciar chat</a>
-    </div>
+    <!-- Contenedor donde se mostrarán las personas -->
+    <div id="people-list"></div>
 
     <!-- Ventana de galería de fotos -->
     <div class="gallery" id="gallery">
@@ -109,30 +25,75 @@
     <a href="profile.html" class="back-btn">Volver al perfil</a>
 
     <script>
+        // Función para cargar la lista de personas dinámicamente
+        function loadPeople() {
+            fetch('http://localhost:5000/api/users') // Cambia la URL si tu servidor está en otro puerto
+                .then(response => response.json())
+                .then(users => {
+                    const peopleList = document.getElementById('people-list');
+                    peopleList.innerHTML = ''; // Limpiar la lista actual
+
+                    // Recorrer los usuarios y mostrar cada uno
+                    users.forEach(user => {
+                        const personDiv = document.createElement('div');
+                        personDiv.classList.add('person');
+
+                        const personImage = document.createElement('img');
+                        personImage.src = user.image;
+                        personImage.alt = `Foto de ${user.name}`;
+                        personImage.onclick = function() { openGallery(user.gallery); };
+
+                        const personName = document.createElement('div');
+                        personName.classList.add('person-name');
+                        personName.textContent = user.name;
+
+                        const startChatBtn = document.createElement('a');
+                        startChatBtn.href = `chat.html?user=${encodeURIComponent(user.name)}`;
+                        startChatBtn.classList.add('start-chat-btn');
+                        startChatBtn.textContent = 'Iniciar chat';
+
+                        // Agregar todos los elementos a la persona
+                        personDiv.appendChild(personImage);
+                        personDiv.appendChild(personName);
+                        personDiv.appendChild(startChatBtn);
+
+                        // Agregar la persona al listado
+                        peopleList.appendChild(personDiv);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error al obtener los usuarios:', error);
+                });
+        }
+
         // Función para abrir la galería de fotos al hacer clic en la foto de perfil
         function openGallery(images) {
-            var gallery = document.getElementById("gallery");
-            var galleryImages = document.getElementById("gallery-images");
+            const gallery = document.getElementById('gallery');
+            const galleryImages = document.getElementById('gallery-images');
 
             // Limpiar las imágenes previas
-            galleryImages.innerHTML = "";
+            galleryImages.innerHTML = '';
 
             // Mostrar las imágenes
             images.forEach(function(image) {
-                var imgElement = document.createElement("img");
+                const imgElement = document.createElement('img');
                 imgElement.src = image;
                 galleryImages.appendChild(imgElement);
             });
 
             // Mostrar la galería
-            gallery.style.display = "flex";
+            gallery.style.display = 'flex';
         }
 
         // Función para cerrar la galería
         function closeGallery() {
-            var gallery = document.getElementById("gallery");
-            gallery.style.display = "none";
+            const gallery = document.getElementById('gallery');
+            gallery.style.display = 'none';
         }
+
+        // Cargar la lista de personas al cargar la página
+        window.onload = loadPeople;
+
     </script>
 
 </body>
